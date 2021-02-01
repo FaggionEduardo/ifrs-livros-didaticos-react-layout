@@ -19,7 +19,7 @@ import {
   Settings as SettingsIcon,
   ShoppingBag as ShoppingBagIcon,
   User as UserIcon,
-  UserPlus as UserPlusIcon,
+  Book as BookIcon,
   Users as UsersIcon
 } from 'react-feather';
 import NavItem from './NavItem';
@@ -32,9 +32,9 @@ const user = {
 
 const items = [
   {
-    href: '/app/student',
-    icon: UsersIcon,
-    title: 'Alunos'
+    href: '/app/books',
+    icon: BookIcon,
+    title: 'Livros'
   },
   
 ];
