@@ -36,6 +36,11 @@ const items = [
     icon: BookIcon,
     title: 'Livros'
   },
+  {
+    href: '/app/accessLevel',
+    icon: LockIcon,
+    title: 'Niveis de acesso'
+  },
   
 ];
 
