@@ -20,6 +20,7 @@ import {
   ShoppingBag as ShoppingBagIcon,
   User as UserIcon,
   Book as BookIcon,
+  Bookmark as BookMarkIcon,
   Users as UsersIcon
 } from 'react-feather';
 import NavItem from './NavItem';
@@ -35,6 +36,11 @@ const items = [
     href: '/app/books',
     icon: BookIcon,
     title: 'Livros'
+  },
+  {
+    href: '/app/category',
+    icon: BookMarkIcon,
+    title: 'Categorias de Livros'
   },
   
 ];
