@@ -9,7 +9,7 @@ import UnPrivateRoute from "./routes/UnPrivateRoute";
 import AuthProvider from "./providers/Auth";
 import Dashboard from "./layouts/DashboardLayout"
 import Main from "./layouts/MainLayout"
-import { Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import LoginView from 'src/views/auth';
 import AccountView from 'src/views/account/AccountView';
 import ListView from 'src/views/StudentsList/ListView';
@@ -22,7 +22,7 @@ const App = () => {
  
 
   return (
-    <Router history={hist}>
+    <Router>
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <AuthProvider>  

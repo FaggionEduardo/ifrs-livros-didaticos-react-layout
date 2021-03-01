@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
+import {  useAuth } from '../../../providers/Auth'
 import PropTypes from 'prop-types';
 import {
   Avatar,
@@ -25,11 +26,6 @@ import {
 } from 'react-feather';
 import NavItem from './NavItem';
 
-const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  jobTitle: 'Servidor',
-  name: 'Usuário'
-};
 
 const items = [
   {
@@ -64,7 +60,7 @@ const useStyles = makeStyles(() => ({
 const NavBar = ({ onMobileClose, openMobile }) => {
   const classes = useStyles();
   const location = useLocation();
-
+  const {auth} =useAuth()
   useEffect(() => {
     if (openMobile && onMobileClose) {
       onMobileClose();
@@ -84,24 +80,12 @@ const NavBar = ({ onMobileClose, openMobile }) => {
         flexDirection="column"
         p={2}
       >
-        <Avatar
-          className={classes.avatar}
-          component={RouterLink}
-          src={user.avatar}
-          to="/app/account"
-        />
         <Typography
           className={classes.name}
           color="textPrimary"
           variant="h5"
         >
-          {user.name}
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body2"
-        >
-          {user.jobTitle}
+          {"Bem-vindo, "+auth.user.name}
         </Typography>
       </Box>
       <Divider />

@@ -3,7 +3,9 @@ import Page from 'src/components/Page';
 import Toolbar from './Toolbar';
 import CategoryDetails from './EditCategoryDetails';
 import CreateCategory from './CreateCategoryDetails';
-import { useMutation,useQuery, gql } from '@apollo/client';
+import {CategoryQuery} from '../../../graphql/queries/category'
+import {CategoryCreate, CategoryDelete, CategoryEdit} from '../../../graphql/mutations/category'
+import { useMutation,useQuery } from '@apollo/client';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Modal from '../../../components/ModalIcon';
 import {
@@ -37,47 +39,6 @@ const useStyles = makeStyles((theme) => ({
     cursor:'pointer'
   }
 }));
-
-const CategoryDelete = gql`
-  mutation CategoryDelete($id:ID!){
-    deleteCategory(
-      id:$id
-    )
-  }
-`;
-const CategoryQuery = gql`
-  query CategoryQuery($page:Int!, $limit:Int!){
-    paginateCategories(page:$page, limit:$limit) {
-      docs{
-        id
-        name
-      }
-      total
-    }
-  }
-`;
-const CategoryEdit = gql`
-  mutation CategoryEdit($id:ID!, $name:String!){
-    updateCategory(
-    id:$id
-    name:$name
-  ),{
-    id
-   
-  }
-  }
-`;
-const CategoryCreate = gql`
-  mutation CategoryCreate( $name:String!){
-    createCategory(
-    name:$name
-  ),{
-    id
-   
-  }
-  }
-`;
-
 
 const CategoryList = (props) => {
   const classes = useStyles();

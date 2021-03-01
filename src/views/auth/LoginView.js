@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { useMutation,useQuery, gql } from '@apollo/client';
+import { useMutation, gql} from '@apollo/client';
+import {Login} from '../../graphql/mutations/auth'
 import { login as AuthLogin, useAuth } from '../../providers/Auth'
 import { onError } from "@apollo/link-error";
 import {
@@ -14,19 +15,6 @@ import {
   makeStyles
 } from '@material-ui/core';
 
-
-
-const Login = gql`
-  mutation Login( $login:String!, $password:String!){
-    login(
-    login:$login
-    password:$password
-  ),{
-    token
-    id
-  }
-  }
-`;
 const LoginView = () => {
   const {dispatch}=useAuth()
   const [values, setValues] = useState(
@@ -48,7 +36,7 @@ const LoginView = () => {
      
     } ,
     onCompleted({login}) {
-        var auth=AuthLogin(login.id, login.token)
+        var auth=AuthLogin(login.user, login.token)
         dispatch(auth)
     }
   });

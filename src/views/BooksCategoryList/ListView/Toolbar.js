@@ -42,7 +42,7 @@ const Toolbar = ({ className,create,  ...rest }) => {
           color="primary"
           onClick={()=>create(true)}
           variant="contained"
-        >Adicionar Livro</Button>
+        >Adicionar Categoria</Button>
       
       </Box>
       <Box mt={3}>

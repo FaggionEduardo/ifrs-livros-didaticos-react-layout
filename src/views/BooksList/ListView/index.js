@@ -3,6 +3,8 @@ import Page from 'src/components/Page';
 import Toolbar from './Toolbar';
 import BooksDetails from './EditBooksDetails';
 import CreateBooks from './CreateBooksDetails';
+import {BooksQuery} from '../../../graphql/queries/book'
+import {BooksCreate, BooksDelete, BooksEdit} from '../../../graphql/mutations/book'
 import { useMutation,useQuery, gql } from '@apollo/client';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Modal from '../../../components/ModalIcon';
@@ -38,57 +40,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const BooksDelete = gql`
-  mutation BooksDelete($id:ID!){
-    deleteBook(
-      id:$id
-    )
-  }
-`;
-const BooksQuery = gql`
-  query BooksQuery($page:Int!, $limit:Int!){
-    paginateBooks(page:$page, limit:$limit) {
-      docs{
-        id
-        name
-        code
-        author
-        volume
-        quantity
-      }
-      total
-    }
-  }
-`;
-const BooksEdit = gql`
-  mutation BooksEdit($id:ID!, $name:String!, $code:String!,$author:String!, $volume:String!, $quantity:Int!){
-    updateBook(
-    id:$id
-    name:$name
-    code:$code
-    author:$author
-    volume:$volume
-    quantity:$quantity
-  ),{
-    id
-   
-  }
-  }
-`;
-const BooksCreate = gql`
-  mutation BooksCreate( $name:String!, $code:String!,$author:String!, $volume:String!, $quantity:Int!){
-    createBook(
-    name:$name
-    code:$code
-    author:$author
-    volume:$volume
-    quantity:$quantity
-  ),{
-    id
-   
-  }
-  }
-`;
+
 
 
 const BooksList = (props) => {
