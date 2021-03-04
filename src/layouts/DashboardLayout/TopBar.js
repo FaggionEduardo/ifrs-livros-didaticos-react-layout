@@ -15,7 +15,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import InputIcon from '@material-ui/icons/Input';
 import Logo from 'src/components/Logo';
-
+import { logout as AuthLogout, useAuth } from '../../providers/Auth'
 const useStyles = makeStyles(() => ({
   root: {
   },
@@ -32,7 +32,10 @@ const TopBar = ({
 }) => {
   const classes = useStyles();
   const [notifications] = useState([]);
-
+  const {dispatch}=useAuth()
+  function LogOut(){
+    dispatch(AuthLogout())
+  }
   return (
     <AppBar
       className={clsx(classes.root, className)}
@@ -46,7 +49,7 @@ const TopBar = ({
         <Box flexGrow={1} />
         <Hidden mdDown>
           
-          <IconButton color="inherit">
+          <IconButton onClick={LogOut} color="inherit">
             <InputIcon />
           </IconButton>
         </Hidden>
@@ -63,9 +66,5 @@ const TopBar = ({
   );
 };
 
-TopBar.propTypes = {
-  className: PropTypes.string,
-  onMobileNavOpen: PropTypes.func
-};
 
 export default TopBar;

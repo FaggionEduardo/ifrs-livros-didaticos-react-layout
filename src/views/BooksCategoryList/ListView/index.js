@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import Page from 'src/components/Page';
 import Toolbar from './Toolbar';
-import BooksDetails from './EditBooksDetails';
-import CreateBooks from './CreateBooksDetails';
-import {BooksQuery} from '../../../graphql/queries/book'
-import {BooksCreate, BooksDelete, BooksEdit} from '../../../graphql/mutations/book'
-import { useMutation,useQuery, gql } from '@apollo/client';
+import CategoryDetails from './EditCategoryDetails';
+import CreateCategory from './CreateCategoryDetails';
+import {CategoryQuery} from '../../../graphql/queries/category'
+import {CategoryCreate, CategoryDelete, CategoryEdit} from '../../../graphql/mutations/category'
+import { useMutation,useQuery } from '@apollo/client';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Modal from '../../../components/ModalIcon';
 import {
@@ -40,36 +40,33 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-
-
-
-const BooksList = (props) => {
+const CategoryList = (props) => {
   const classes = useStyles();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
   const [edit, setEdit] = useState(false);
   const [create, setCreate] = useState(false);
-  const { loading, error, data } = useQuery(BooksQuery, {
+  const { loading, error, data } = useQuery(CategoryQuery, {
     variables: { page:page, limit:limit },
   });
-  const [mutationDelete] = useMutation(BooksDelete,{
+  const [mutationDelete] = useMutation(CategoryDelete,{
     
     refetchQueries: [
-      { query: BooksQuery,
+      { query: CategoryQuery,
        variables: { page:page, limit:limit }
        }
     ]
   });
-  const [mutationEdit] = useMutation(BooksEdit,{
+  const [mutationEdit] = useMutation(CategoryEdit,{
     refetchQueries: [
-      { query: BooksQuery,
+      { query: CategoryQuery,
        variables: { page:page, limit:limit }
        }
     ]
   });  
-  const [mutationCreate] = useMutation(BooksCreate,{
+  const [mutationCreate] = useMutation(CategoryCreate,{
     refetchQueries: [
-      { query: BooksQuery,
+      { query: CategoryQuery,
        variables: { page:page, limit:limit }
        }
     ]
@@ -107,7 +104,7 @@ const BooksList = (props) => {
   return (
     <Page
       className={classes.root}
-      title="Livros"
+      title="Categorias de Livros"
     >
       <Container maxWidth={false}>
       {edit==false && create==false?
@@ -122,27 +119,16 @@ const BooksList = (props) => {
                   <TableHead>
                     <TableRow>
                       <TableCell>
-                        Nome
+                        Categoria
                       </TableCell>
-                      <TableCell>
-                        Código
-                      </TableCell>
-                      <TableCell>
-                        Autor
-                      </TableCell>
-                      <TableCell>
-                        Volume
-                      </TableCell>
-                      <TableCell>
-                        Quantidade
-                      </TableCell>
+                      
                       <TableCell>
                         
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {data.paginateBooks.docs.slice(0, limit).map((book) => (
+                    {data.paginateCategories.docs.slice(0, limit).map((book) => (
                       <TableRow
                         hover
                         key={book.id}
@@ -163,25 +149,13 @@ const BooksList = (props) => {
                           </Box>
                         </TableCell>
                         <TableCell>
-                          {book.code}
-                        </TableCell>
-                        <TableCell>
-                          {book.author}
-                        </TableCell>
-                        <TableCell>
-                          {book.volume}
-                        </TableCell>
-                        <TableCell>
-                          {book.quantity}
-                        </TableCell>
-                        <TableCell>
                           <Modal
                             className={classes.icon}
                             icon={TrashIcon}
                           >
                             <CardHeader
-                            subheader={'Tem certeza que deseja deletar o livro "'+book.name+'"'}
-                            title="Deletar livro"
+                            subheader={'Tem certeza que deseja deletar a categoria "'+book.name+'"'}
+                            title="Deletar categoria"
                           />
                           <Button
                             variant="contained"
@@ -202,7 +176,7 @@ const BooksList = (props) => {
             </PerfectScrollbar>
             <TablePagination
               component="div"
-              count={data.paginateBooks.total}
+              count={data.paginateCategories.total}
               onChangePage={handlePageChange}
               onChangeRowsPerPage={handleLimitChange}
               page={page-1}
@@ -216,8 +190,8 @@ const BooksList = (props) => {
         </>
         :
         <>
-        {edit!==false?<BooksDetails set={setEdit} edit={editBook} details={edit}/>:''}
-        {create!==false?<CreateBooks set={setCreate} create={createBook} />:''}
+        {edit!==false?<CategoryDetails set={setEdit} edit={editBook} details={edit}/>:''}
+        {create!==false?<CreateCategory set={setCreate} create={createBook} />:''}
         </>
         }
       </Container>
@@ -225,5 +199,5 @@ const BooksList = (props) => {
   );
 };
 
-export default (BooksList);
+export default (CategoryList);
 

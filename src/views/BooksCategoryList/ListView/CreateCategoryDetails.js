@@ -25,10 +25,6 @@ const BookDetails = ({ className, create, set,...rest }) => {
   const [values, setValues] = useState(
     {
       name:"",
-      code:"",
-      author:"",
-      volume:"",
-      quantity:1
     }
   );
   
@@ -48,8 +44,8 @@ const BookDetails = ({ className, create, set,...rest }) => {
     >
       <Card>
         <CardHeader
-          subheader="Você pode cadastrar as informações de um livro."
-          title="Livro"
+          subheader="Você pode cadastrar as informações de categoria de livro."
+          title="Categoria de Livro"
         />
         <Divider />
         <CardContent>
@@ -64,71 +60,15 @@ const BookDetails = ({ className, create, set,...rest }) => {
             >
               <TextField
                 fullWidth
-                helperText="Informe o título do livro"
-                label="Título"
+                helperText="Informe o nome da categoria"
+                label="Categoria"
                 name="name"
                 onChange={handleChange}
                 required
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Autor"
-                name="author"
-                onChange={handleChange}
-                required
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Código"
-                name="code"
-                onChange={handleChange}
-                required
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Volume"
-                name="volume"
-                required
-                onChange={handleChange}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Quantidade"
-                name="quantity"
-                onChange={handleChange}
-                required
-                type="number"
-                variant="outlined"
-              />
-            </Grid>
+            
             
           </Grid>
         </CardContent>

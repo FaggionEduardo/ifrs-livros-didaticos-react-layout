@@ -40,8 +40,8 @@ const BookDetails = ({ className, details,edit,set, ...rest }) => {
     >
       <Card>
         <CardHeader
-          subheader="Você pode editar as informações do livro."
-          title="Livro"
+          subheader="Você pode editar as informações as informações de categoria de livro."
+          title="Categoria de Livro"
         />
         <Divider />
         <CardContent>
@@ -56,8 +56,8 @@ const BookDetails = ({ className, details,edit,set, ...rest }) => {
             >
               <TextField
                 fullWidth
-                helperText="Informe o título do livro"
-                label="Título"
+                helperText="Informe o nome da categoria"
+                label="Categoria"
                 name="name"
                 onChange={handleChange}
                 required
@@ -65,67 +65,7 @@ const BookDetails = ({ className, details,edit,set, ...rest }) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Autor"
-                name="author"
-                onChange={handleChange}
-                required
-                value={values.author}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Código"
-                name="code"
-                onChange={handleChange}
-                required
-                value={values.code}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Volume"
-                name="volume"
-                required
-                onChange={handleChange}
-                value={values.volume}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Quantidade"
-                name="quantity"
-                onChange={handleChange}
-                required
-                type="number"
-                value={values.quantity}
-                variant="outlined"
-              />
-            </Grid>
+            
             
           </Grid>
         </CardContent>
