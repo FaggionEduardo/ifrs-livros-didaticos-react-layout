@@ -22,7 +22,8 @@ import {
   User as UserIcon,
   Book as BookIcon,
   Bookmark as BookMarkIcon,
-  Users as UsersIcon
+  Users as UsersIcon,
+  Square as SquareIcon
 } from 'react-feather';
 import NavItem from './NavItem';
 
@@ -37,6 +38,11 @@ const items = [
     href: '/app/category',
     icon: BookMarkIcon,
     title: 'Categorias de Livros'
+  },
+  {
+    href: '/app/class',
+    icon: SquareIcon,
+    title: 'Turma'
   },
   
 ];
