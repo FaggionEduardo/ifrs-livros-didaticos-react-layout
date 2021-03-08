@@ -38,6 +38,11 @@ const items = [
     icon: BookMarkIcon,
     title: 'Categorias de Livros'
   },
+  {
+    href: '/app/users',
+    icon: UserIcon,
+    title: 'Usuários'
+  },
   
 ];
 

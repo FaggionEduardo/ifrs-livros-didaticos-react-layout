@@ -11,9 +11,9 @@ import Dashboard from "./layouts/DashboardLayout"
 import Main from "./layouts/MainLayout"
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import LoginView from 'src/views/auth';
-import AccountView from 'src/views/account/AccountView';
 import ListView from 'src/views/StudentsList/ListView';
 import Books from 'src/views/BooksList/ListView';
+import Users from 'src/views/UsersList/ListView';
 import BooksCategory from 'src/views/BooksCategoryList/ListView';
 import { createBrowserHistory } from "history";
 var hist = createBrowserHistory();
@@ -46,6 +46,11 @@ const App = () => {
               exact
               path="/app/category"
               component={() => <Dashboard Children={BooksCategory} />}
+            />
+            <PrivateRoute
+              exact
+              path="/app/users"
+              component={() => <Dashboard Children={Users} />}
             />
           </Switch>
     </AuthProvider>

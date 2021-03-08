@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useMutation, gql} from '@apollo/client';
 import {Login} from '../../graphql/mutations/auth'
 import { login as AuthLogin, useAuth } from '../../providers/Auth'
-import { onError } from "@apollo/link-error";
+import useMyForm from '../../hooks/MyForm'
+import fields from './fields'
 import {
   Box,
   Button,
@@ -17,41 +18,35 @@ import {
 
 const LoginView = () => {
   const {dispatch}=useAuth()
-  const [values, setValues] = useState(
-    {
-      login:"",
-      password:""
-    }
-  );
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
-    });
-  };
-
+  const {
+    fields: input,
+    errors,
+    handleSubmit,
+    handleChange,
+    setTouched,
+    reset,
+    setValues
+  } = useMyForm(fields);
   
   const [mutationLogin,{ loading: mutationLoading, error: mutationError }] = useMutation(Login,{
     onError(){
      
     } ,
     onCompleted({login}) {
-        var auth=AuthLogin(login.user, login.token)
-        dispatch(auth)
+        dispatch(AuthLogin(login.user, login.token))
     }
   });
-   function handleSubmit (e) {
-    e.preventDefault()
-     mutationLogin({ variables: { login:values.login,password:values.password }})
+  const onSubmit= async (data) =>  {
+    await mutationLogin({ variables:  data })
     
   }
+  
+
   return (
     
       
           
-              <form onSubmit={handleSubmit}
-              
-              >
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <Box mb={3}>
                   <Typography
                     color="textPrimary"
@@ -78,23 +73,31 @@ const LoginView = () => {
                
                
                 <TextField
+                  error={!!errors.login}
                   fullWidth
-                  label="E-mail "
+                  label={input.login.label}
                   margin="normal"
                   name="login"
-                  type="email"
-                  onChange={handleChange}
+                  type={input.login.type}
+                  onChange={({ target }) => handleChange(target)}
+                  value={input.login.value}
                   variant="outlined"
+                  helperText={errors.login}
                 />
+               
                 <TextField
+                  error={!!errors.password}
                   fullWidth
-                  label="Senha"
+                  label={input.password.label}
                   margin="normal"
                   name="password"
-                  type="password"
-                  onChange={handleChange}
+                  type={input.password.type}
+                  onChange={({ target }) => handleChange(target)}
+                  value={input.password.value}
+                  helperText={errors.password}
                   variant="outlined"
                 />
+  
                 <Box my={2}>
                   <Button
                     color="primary"
