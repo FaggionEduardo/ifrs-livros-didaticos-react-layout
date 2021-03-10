@@ -11,8 +11,8 @@ import {
   Divider,
   Grid,
   TextField,
-  makeStyles
-  
+  makeStyles,
+  Autocomplete
 } from '@material-ui/core';
 
 
@@ -85,7 +85,6 @@ const ClassDetails = ({ className, create, set,...rest }) => {
                 variant="outlined"
               />
             </Grid>
-      
           </Grid>
         </CardContent>
         <Divider />
