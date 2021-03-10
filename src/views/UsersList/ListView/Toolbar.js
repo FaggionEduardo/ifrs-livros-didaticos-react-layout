@@ -42,7 +42,7 @@ const Toolbar = ({ className,create,  ...rest }) => {
           color="primary"
           onClick={()=>create(true)}
           variant="contained"
-        >Adicionar Nivel de Acesso</Button>
+        >Adicionar Usuário</Button>
       
       </Box>
       <Box mt={3}>
@@ -63,7 +63,7 @@ const Toolbar = ({ className,create,  ...rest }) => {
                     </InputAdornment>
                   )
                 }}
-                placeholder="Buscar Niveis de Acesso"
+                placeholder="Buscar Alunos"
                 variant="outlined"
               />
             </Box>

@@ -26,10 +26,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Results = ({ className, accessLevels, ...rest }) => {
+const Results = ({ className, books, ...rest }) => {
   const classes = useStyles();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
+
+
+  
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
@@ -53,15 +56,27 @@ const Results = ({ className, accessLevels, ...rest }) => {
                   Nome
                 </TableCell>
                 <TableCell>
+                  Código
+                </TableCell>
+                <TableCell>
+                  Autor
+                </TableCell>
+                <TableCell>
+                  Volume
+                </TableCell>
+                <TableCell>
+                  Quantidade
+                </TableCell>
+                <TableCell>
                   
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {accessLevels.slice(0, limit).map((accessLevel) => (
+              {books.slice(0, limit).map((book) => (
                 <TableRow
                   hover
-                  key={accessLevel.id}
+                  key={book.id}
                 >
                   
                   <TableCell>
@@ -74,9 +89,21 @@ const Results = ({ className, accessLevels, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {accessLevel.name}
+                        {book.name}
                       </Typography>
                     </Box>
+                  </TableCell>
+                  <TableCell>
+                    {book.code}
+                  </TableCell>
+                  <TableCell>
+                    {book.author}
+                  </TableCell>
+                  <TableCell>
+                    {book.volume}
+                  </TableCell>
+                  <TableCell>
+                    {book.quantity}
                   </TableCell>
                   <TableCell>
                     <TrashIcon/>
@@ -90,7 +117,7 @@ const Results = ({ className, accessLevels, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={accessLevels.length}
+        count={books.length}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleLimitChange}
         page={page}
@@ -101,5 +128,7 @@ const Results = ({ className, accessLevels, ...rest }) => {
     </Card>
   );
 };
+
+
 
 export default Results;

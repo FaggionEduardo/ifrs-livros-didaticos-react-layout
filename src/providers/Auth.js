@@ -25,7 +25,7 @@ const authLink = new ApolloLink((operation, forward) => {
 
   operation.setContext({
     headers: {
-      authorization: auth?.token ? `${auth.token}` : "",
+      authorization: auth?.token ? `Bearer ${auth.token}` : "",
     },
   });
 
@@ -69,7 +69,6 @@ const reducer = (state, { type, payload }) => {
   switch (type) {
     case "LOGIN": {
       const { user, token } = payload;
-      console.log(payload)
       return { isAuthenticated: true, user, token };
     }
     case "LOGOUT":

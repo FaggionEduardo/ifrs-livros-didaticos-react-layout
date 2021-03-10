@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import Page from 'src/components/Page';
 import Toolbar from './Toolbar';
-import AccessLevelDetails from './EditAccessLevelDetails';
-import CreateAccessLevel from './CreateAccessLevelDetails';
+import UsersDetails from './EditUsersDetails';
+import CreateUsers from './CreateUsersDetails';
+import {UserQuery} from '../../../graphql/queries/user'
+import {UserCreate, UserDelete, UserEdit} from '../../../graphql/mutations/user'
 import { useMutation,useQuery, gql } from '@apollo/client';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Modal from '../../../components/ModalIcon';
 import {
+  Avatar,
   Box,
   Card,
   Container,
+  Checkbox,
   Table,
   TableBody,
   TableCell,
@@ -19,6 +23,7 @@ import {
   Typography,
   makeStyles,
   CardHeader,
+  TextField,
   Button
 } from '@material-ui/core';
 import { Trash2 as TrashIcon, Edit as EditIcon} from 'react-feather';
@@ -35,80 +40,44 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const AccessLevelDelete = gql`
-  mutation AccessLevelDelete($id:ID!){
-    deleteAccessLevel(
-      id:$id
-    )
-  }
-`;
-const AccessLevelQuery = gql`
-  query AccessLevelQuery($page:Int!, $limit:Int!){
-    paginateAccessLevel(page:$page, limit:$limit) {
-      docs{
-        id
-        role
-      }
-      total
-    }
-  }
-`;
-const AccessLevelEdit = gql`
-  mutation BooksEdit($id:ID!, $role:String!){
-    updateAccessLevel(
-      id:$id
-      role:$role
-  ),{
-    id
-  }
-  }
-`;
-const AccessLevelCreate = gql`
-  mutation BooksCreate( $role:String!){
-    createAccessLevel(
-      role:$role
-  ),{
-    id
-  }
-  }
-`;
 
 
-const AccessLevelList = (props) => {
+
+const UsersList = (props) => {
   const classes = useStyles();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
   const [edit, setEdit] = useState(false);
   const [create, setCreate] = useState(false);
-  const { loading, error, data } = useQuery(AccessLevelQuery, {
+  const { loading, error, data } = useQuery(UserQuery, {
     variables: { page:page, limit:limit },
   });
-
-  const [mutationDelete] = useMutation(AccessLevelDelete,{
+  const [mutationDelete] = useMutation(UserDelete,{
+    
     refetchQueries: [
-      { query: AccessLevelQuery,
-        variables: { page:page, limit:limit }
-      }
+      { query: UserQuery,
+       variables: { page:page, limit:limit }
+       }
     ]
   });
-
-  const [mutationEdit] = useMutation(AccessLevelEdit,{
+  const [mutationEdit] = useMutation(UserEdit,{
     refetchQueries: [
-      { query: AccessLevelQuery,
-        variables: { page:page, limit:limit }
-      }
+      { query: UserQuery,
+       variables: { page:page, limit:limit }
+       }
+    ]
+  });  
+  const [mutationCreate] = useMutation(UserCreate,{
+    refetchQueries: [
+      { query: UserQuery,
+       variables: { page:page, limit:limit }
+       }
     ]
   });  
 
-  const [mutationCreate] = useMutation(AccessLevelCreate,{
-    refetchQueries: [
-      { query: AccessLevelQuery,
-        variables: { page:page, limit:limit }
-      }
-    ]
-  });  
-
+ 
   if (error) return <p>Error :(</p>;
+ 
  
   const defineEdit = (obj) => {
    setEdit(obj)
@@ -121,16 +90,16 @@ const AccessLevelList = (props) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage+1);
   };
-  const deleteAccessLevel = (id) => {
+  const deleteUser = (id) => {
     mutationDelete({ variables: { id } })
   };
-  const editAccessLevel = (values) => {
-    values.quantity=parseInt(values.quantity)
+  const editUser = (values) => {
+    values.accessLevel=parseInt(values.accessLevel)
     mutationEdit({ variables: values })
     setEdit(false)
   };
-  const createAccessLevel = (values) => {
-    values.quantity=parseInt(values.quantity)
+  const createUser = (values) => {
+    values.accessLevel=parseInt(values.accessLevel)
     mutationCreate({ variables: values })
     setCreate(false)
   };
@@ -138,7 +107,7 @@ const AccessLevelList = (props) => {
   return (
     <Page
       className={classes.root}
-      title="Niveis de Acesso"
+      title="Usuários"
     >
       <Container maxWidth={false}>
       {edit==false && create==false?
@@ -156,15 +125,21 @@ const AccessLevelList = (props) => {
                         Nome
                       </TableCell>
                       <TableCell>
+                        Login
+                      </TableCell>
+                      <TableCell>
+                        Nível de acesso 
+                      </TableCell>
+                      <TableCell>
                         
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {data.paginateAccessLevel.docs.slice(0, limit).map((accessLevel) => (
+                    {data.paginateUsers.docs.slice(0, limit).map((user) => (
                       <TableRow
                         hover
-                        key={accessLevel.id}
+                        key={user.id}
                       >
                         
                         <TableCell>
@@ -177,29 +152,36 @@ const AccessLevelList = (props) => {
                               color="textPrimary"
                               variant="body1"
                             >
-                              {accessLevel.role}
+                              {user.name}
                             </Typography>
                           </Box>
                         </TableCell>
+                        <TableCell>
+                          {user.login}
+                        </TableCell>
+                        <TableCell>
+                          {user.accessLevel}
+                        </TableCell>
+                       
                         <TableCell>
                           <Modal
                             className={classes.icon}
                             icon={TrashIcon}
                           >
                             <CardHeader
-                            subheader={'Tem certeza que deseja deletar o nivel de acesso "'+accessLevel.role+'"'}
-                            title="Deletar nivel de acesso"
+                            subheader={'Tem certeza que deseja deletar o usuário "'+user.name+'"'}
+                            title="Deletar usuário"
                           />
                           <Button
                             variant="contained"
                             style={{margin:10,backgroundColor:"#8B0000",color:'#fff'}}
-                            onClick={()=>deleteAccessLevel(accessLevel.id)}
+                            onClick={()=>deleteUser(user.id)}
                           >
                             Deletar
                           </Button>
                           </Modal>
                           
-                          <EditIcon onClick={()=>defineEdit(accessLevel)} className={classes.icon}/>
+                          <EditIcon onClick={()=>defineEdit(user)} className={classes.icon}/>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -209,7 +191,7 @@ const AccessLevelList = (props) => {
             </PerfectScrollbar>
             <TablePagination
               component="div"
-              count={data.paginateAccessLevel.total}
+              count={data.paginateUsers.total}
               onChangePage={handlePageChange}
               onChangeRowsPerPage={handleLimitChange}
               page={page-1}
@@ -223,8 +205,8 @@ const AccessLevelList = (props) => {
         </>
         :
         <>
-        {edit!==false?<AccessLevelDetails edit={editAccessLevel} details={edit}/>:''}
-        {create!==false?<CreateAccessLevel create={createAccessLevel} />:''}
+        {edit!==false?<UsersDetails set={setEdit} edit={editUser} details={edit}/>:''}
+        {create!==false?<CreateUsers set={setCreate} create={createUser} />:''}
         </>
         }
       </Container>
@@ -232,5 +214,5 @@ const AccessLevelList = (props) => {
   );
 };
 
-export default (AccessLevelList);
+export default (UsersList);
 

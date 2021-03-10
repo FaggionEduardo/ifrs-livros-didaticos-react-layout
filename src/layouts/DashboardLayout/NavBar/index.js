@@ -40,6 +40,11 @@ const items = [
     title: 'Categorias de Livros'
   },
   {
+    href: '/app/users',
+    icon: UserIcon,
+    title: 'Usuários'
+  },
+  {
     href: '/app/class',
     icon: SquareIcon,
     title: 'Turma'
