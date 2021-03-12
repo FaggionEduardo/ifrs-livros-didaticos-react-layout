@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import Page from 'src/components/Page';
 import Toolbar from './Toolbar';
-import CategoryDetails from './EditCategoryDetails';
-import CreateCategory from './CreateCategoryDetails';
-import {CategoryQuery} from '../../../graphql/queries/category'
+import {CategoriesQuery} from '../../../graphql/queries/category'
 import {CategoryCreate, CategoryDelete, CategoryEdit} from '../../../graphql/mutations/category'
 import { useMutation,useQuery } from '@apollo/client';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -27,6 +25,7 @@ import {
   Button
 } from '@material-ui/core';
 import { Trash2 as TrashIcon, Edit as EditIcon} from 'react-feather';
+import { Link } from 'react-router-dom';
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -44,41 +43,24 @@ const CategoryList = (props) => {
   const classes = useStyles();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
-  const [edit, setEdit] = useState(false);
-  const [create, setCreate] = useState(false);
-  const { loading, error, data } = useQuery(CategoryQuery, {
+  const { loading, error, data } = useQuery(CategoriesQuery, {
     variables: { page:page, limit:limit },
   });
   const [mutationDelete] = useMutation(CategoryDelete,{
     
     refetchQueries: [
-      { query: CategoryQuery,
+      { query: CategoriesQuery,
        variables: { page:page, limit:limit }
        }
     ]
   });
-  const [mutationEdit] = useMutation(CategoryEdit,{
-    refetchQueries: [
-      { query: CategoryQuery,
-       variables: { page:page, limit:limit }
-       }
-    ]
-  });  
-  const [mutationCreate] = useMutation(CategoryCreate,{
-    refetchQueries: [
-      { query: CategoryQuery,
-       variables: { page:page, limit:limit }
-       }
-    ]
-  });  
+
 
  
   if (error) return <p>Error :(</p>;
  
  
-  const defineEdit = (obj) => {
-   setEdit(obj)
-  };
+ 
   
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
@@ -87,19 +69,10 @@ const CategoryList = (props) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage+1);
   };
-  const deleteBook = (id) => {
+  const deleteCategory = (id) => {
     mutationDelete({ variables: { id } })
   };
-  const editBook = (values) => {
-    values.quantity=parseInt(values.quantity)
-    mutationEdit({ variables: values })
-    setEdit(false)
-  };
-  const createBook = (values) => {
-    values.quantity=parseInt(values.quantity)
-    mutationCreate({ variables: values })
-    setCreate(false)
-  };
+
  
   return (
     <Page
@@ -107,9 +80,7 @@ const CategoryList = (props) => {
       title="Categorias de Livros"
     >
       <Container maxWidth={false}>
-      {edit==false && create==false?
-      <>
-        <Toolbar create={setCreate} />
+        <Toolbar />
         <Box mt={3}>
           {loading?'':
           <Card>
@@ -128,10 +99,10 @@ const CategoryList = (props) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {data.paginateCategories.docs.slice(0, limit).map((book) => (
+                    {data.paginateCategories.docs.slice(0, limit).map((category) => (
                       <TableRow
                         hover
-                        key={book.id}
+                        key={category.id}
                       >
                         
                         <TableCell>
@@ -144,7 +115,7 @@ const CategoryList = (props) => {
                               color="textPrimary"
                               variant="body1"
                             >
-                              {book.name}
+                              {category.name}
                             </Typography>
                           </Box>
                         </TableCell>
@@ -154,19 +125,19 @@ const CategoryList = (props) => {
                             icon={TrashIcon}
                           >
                             <CardHeader
-                            subheader={'Tem certeza que deseja deletar a categoria "'+book.name+'"'}
+                            subheader={'Tem certeza que deseja deletar a categoria "'+category.name+'"'}
                             title="Deletar categoria"
                           />
                           <Button
                             variant="contained"
                             style={{margin:10,backgroundColor:"#8B0000",color:'#fff'}}
-                            onClick={()=>deleteBook(book.id)}
+                            onClick={()=>deleteCategory(category.id)}
                           >
                             Deletar
                           </Button>
                           </Modal>
                           
-                          <EditIcon onClick={()=>defineEdit(book)} className={classes.icon}/>
+                         <Link style={{color:'#263238'}} to={"/app/category/edit/"+category.id}><EditIcon className={classes.icon}/></Link>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -187,13 +158,6 @@ const CategoryList = (props) => {
           </Card>
           }
         </Box>
-        </>
-        :
-        <>
-        {edit!==false?<CategoryDetails set={setEdit} edit={editBook} details={edit}/>:''}
-        {create!==false?<CreateCategory set={setCreate} create={createBook} />:''}
-        </>
-        }
       </Container>
     </Page>
   );

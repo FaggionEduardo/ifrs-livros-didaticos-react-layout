@@ -14,6 +14,7 @@ import {
   CardHeader
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Toolbar = ({ className,create,  ...rest }) => {
+const Toolbar = ({ className,  ...rest }) => {
   const classes = useStyles();
 
   return (
@@ -37,13 +38,12 @@ const Toolbar = ({ className,create,  ...rest }) => {
         display="flex"
         justifyContent="flex-end"
       >
-        
+        <Link to="/app/users/create">
         <Button
           color="primary"
-          onClick={()=>create(true)}
           variant="contained"
         >Adicionar Usuário</Button>
-      
+      </Link>
       </Box>
       <Box mt={3}>
         <Card>

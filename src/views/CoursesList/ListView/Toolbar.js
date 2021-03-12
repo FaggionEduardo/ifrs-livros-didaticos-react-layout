@@ -11,11 +11,10 @@ import {
   InputAdornment,
   SvgIcon,
   makeStyles,
-  CardHeader
+  CardHeader,
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
-import { Link } from 'react-router-dom';
-
+import {Link} from "react-router-dom"
 const useStyles = makeStyles((theme) => ({
   root: {},
   importButton: {
@@ -26,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Toolbar = ({ className,create,  ...rest }) => {
+const Toolbar = ({ className,  ...rest }) => {
   const classes = useStyles();
 
   return (
@@ -38,12 +37,11 @@ const Toolbar = ({ className,create,  ...rest }) => {
         display="flex"
         justifyContent="flex-end"
       >
-        <Link to="/app/books/create">
+      <Link to="/app/course/create">
         <Button
           color="primary"
-          
           variant="contained"
-        >Adicionar Livro</Button>
+        >Adicionar Curso</Button>
       </Link>
       </Box>
       <Box mt={3}>

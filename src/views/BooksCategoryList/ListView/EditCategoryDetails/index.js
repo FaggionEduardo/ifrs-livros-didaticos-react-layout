@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { useMutation,useQuery, gql } from '@apollo/client';
-import {CategoryCreate} from '../../../../graphql/mutations/category'
-import { Link, useHistory } from 'react-router-dom';
-import { CategoryQuery } from 'src/graphql/queries/category';
+import {CategoryEdit} from '../../../../graphql/mutations/category'
 import useMyForm from '../../../../hooks/MyForm'
 import fields from './fields'
 import {
@@ -18,14 +16,15 @@ import {
   TextField,
   makeStyles
 } from '@material-ui/core';
-
+import { CategoryQuery, CategoriesQuery } from 'src/graphql/queries/category';
+import {Link,useParams,useHistory} from "react-router-dom";
 
 
 const useStyles = makeStyles(() => ({
   root: {}
 }));
 
-const CategoryDetails = ({ className,...rest }) => {
+const CategoryDetails = ({ className, ...rest }) => {
   const classes = useStyles();
   var history= useHistory()
   const {
@@ -37,33 +36,53 @@ const CategoryDetails = ({ className,...rest }) => {
     reset,
     setValues
   } = useMyForm(fields);
-  
-  const [mutationCreate] = useMutation(CategoryCreate,{
+  var { id } = useParams();
+  const { loading, error, data } = useQuery(CategoryQuery, {
+    variables: { id:id },
+  });
+  var values= {
+    name:"",
     
+  }
+  if(!loading){
+    values=data.category
+  }
+  const onCompleted = useCallback(
+    (response) => {
+      setValues(values);
+    },
+    [setValues]
+  );
+  useEffect(() => {
+    onCompleted()
+  },[values])
+  
+  
+ 
+  const [mutationEdit] = useMutation(CategoryEdit,{
     refetchQueries: [
-      { query: CategoryQuery,
+      { query: CategoriesQuery,
        variables: { page:1, limit:10 }
        }
     ]
   });  
-  
-  const createCategory = async (data) => {
-    await mutationCreate({ variables: data })
+  const editCategory = async (data) => {
+    console.log(data)
+    await mutationEdit({ variables: data })
     history.push('/app/category')
-
   };
-
+ 
   
 
   return (
     <form
-    onSubmit={handleSubmit(createCategory)}
+      onSubmit={handleSubmit(editCategory)}
       className={clsx(classes.root, className)}
       {...rest}
     >
       <Card>
         <CardHeader
-          subheader="Você pode cadastrar as informações de categoria de livro."
+          subheader="Você pode editar as informações da categoria."
           title="Categoria de Livro"
         />
         <Divider />
@@ -77,6 +96,7 @@ const CategoryDetails = ({ className,...rest }) => {
               md={6}
               xs={12}
             >
+              <input type="hidden" name="id" value={id}/>
               <TextField
                 error={!!errors.name}
                 fullWidth
@@ -88,8 +108,8 @@ const CategoryDetails = ({ className,...rest }) => {
                 value={input.name.value}
                 variant="outlined"
               />
+              
             </Grid>
-            
             
           </Grid>
         </CardContent>
@@ -111,8 +131,9 @@ const CategoryDetails = ({ className,...rest }) => {
             color="primary"
             variant="contained"
             type="submit"
+            
           >
-            Cadastrar
+            Editar
           </Button>
         </Box>
       </Card>

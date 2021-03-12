@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
-const UserQuery = gql`
-  query UserQuery($page:Int!, $limit:Int!){
+const UsersQuery = gql`
+  query UsersQuery($page:Int!, $limit:Int!){
     paginateUsers(page:$page, limit:$limit) {
       docs{
         id
@@ -13,5 +13,16 @@ const UserQuery = gql`
     }
   }
 `;
+const UserQuery = gql`
+  query UserQuery($id:ID!){
+    user(id:$id) {
+   
+        id
+        name
+        login
+        accessLevel
+    }
+  }
+`;
 
-export {UserQuery}
+export {UsersQuery,UserQuery}

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Page from 'src/components/Page';
 import Toolbar from './Toolbar';
-import {BooksQuery} from '../../../graphql/queries/book'
-import {BooksCreate, BooksDelete, BooksEdit} from '../../../graphql/mutations/book'
-import { useMutation,useQuery, gql } from '@apollo/client';
+import {CoursesQuery} from '../../../graphql/queries/course'
+import {CourseCreate, CourseDelete, CourseEdit} from '../../../graphql/mutations/course'
+import { useMutation,useQuery } from '@apollo/client';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Modal from '../../../components/ModalIcon';
 import {
@@ -39,32 +39,28 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-
-
-
-const BooksList = (props) => {
+const CourseList = (props) => {
   const classes = useStyles();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
-  const { loading, error, data } = useQuery(BooksQuery, {
+  const { loading, error, data } = useQuery(CoursesQuery, {
     variables: { page:page, limit:limit },
   });
-  const [mutationDelete] = useMutation(BooksDelete,{
+  const [mutationDelete] = useMutation(CourseDelete,{
     
     refetchQueries: [
-      { query: BooksQuery,
+      { query: CoursesQuery,
        variables: { page:page, limit:limit }
        }
     ]
   });
 
 
-
  
   if (error) return <p>Error :(</p>;
  
  
-  
+ 
   
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
@@ -73,19 +69,17 @@ const BooksList = (props) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage+1);
   };
-  const deleteBook = (id) => {
+  const deleteCourse = (id) => {
     mutationDelete({ variables: { id } })
   };
-  
- 
+
  
   return (
     <Page
       className={classes.root}
-      title="Livros"
+      title="Curso"
     >
       <Container maxWidth={false}>
-      <>
         <Toolbar />
         <Box mt={3}>
           {loading?'':
@@ -96,30 +90,19 @@ const BooksList = (props) => {
                   <TableHead>
                     <TableRow>
                       <TableCell>
-                        Nome
+                        Curso
                       </TableCell>
-                      <TableCell>
-                        Código
-                      </TableCell>
-                      <TableCell>
-                        Autor
-                      </TableCell>
-                      <TableCell>
-                        Volume
-                      </TableCell>
-                      <TableCell>
-                        Quantidade
-                      </TableCell>
+                      
                       <TableCell>
                         
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {data.paginateBooks.docs.slice(0, limit).map((book) => (
+                    {data.paginateCourses.docs.slice(0, limit).map((course) => (
                       <TableRow
                         hover
-                        key={book.id}
+                        key={course.id}
                       >
                         
                         <TableCell>
@@ -132,21 +115,9 @@ const BooksList = (props) => {
                               color="textPrimary"
                               variant="body1"
                             >
-                              {book.name}
+                              {course.name}
                             </Typography>
                           </Box>
-                        </TableCell>
-                        <TableCell>
-                          {book.code}
-                        </TableCell>
-                        <TableCell>
-                          {book.author}
-                        </TableCell>
-                        <TableCell>
-                          {book.volume}
-                        </TableCell>
-                        <TableCell>
-                          {book.quantity}
                         </TableCell>
                         <TableCell>
                           <Modal
@@ -154,19 +125,19 @@ const BooksList = (props) => {
                             icon={TrashIcon}
                           >
                             <CardHeader
-                            subheader={'Tem certeza que deseja deletar o livro "'+book.name+'"'}
-                            title="Deletar livro"
+                            subheader={'Tem certeza que deseja deletar o curso "'+course.name+'"'}
+                            title="Deletar categoria"
                           />
                           <Button
                             variant="contained"
                             style={{margin:10,backgroundColor:"#8B0000",color:'#fff'}}
-                            onClick={()=>deleteBook(book.id)}
+                            onClick={()=>deleteCourse(course.id)}
                           >
                             Deletar
                           </Button>
                           </Modal>
                           
-                         <Link to={"/app/books/edit/"+book.id} style={{color:'#263238'}}><EditIcon className={classes.icon}/></Link> 
+                         <Link style={{color:'#263238'}} to={"/app/course/edit/"+course.id}><EditIcon className={classes.icon}/></Link>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -176,7 +147,7 @@ const BooksList = (props) => {
             </PerfectScrollbar>
             <TablePagination
               component="div"
-              count={data.paginateBooks.total}
+              count={data.paginateCourses.total}
               onChangePage={handlePageChange}
               onChangeRowsPerPage={handleLimitChange}
               page={page-1}
@@ -187,12 +158,10 @@ const BooksList = (props) => {
           </Card>
           }
         </Box>
-        </>
-        
       </Container>
     </Page>
   );
 };
 
-export default (BooksList);
+export default (CourseList);
 

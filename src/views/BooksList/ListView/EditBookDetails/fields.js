@@ -1,4 +1,8 @@
 export default {
+    id:{
+        type:'hidden',
+        value:'',
+    },
     name:{
         label:'Título',
         type:'text',

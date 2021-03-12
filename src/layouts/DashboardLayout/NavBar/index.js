@@ -22,7 +22,8 @@ import {
   User as UserIcon,
   Book as BookIcon,
   Bookmark as BookMarkIcon,
-  Users as UsersIcon
+  Users as UsersIcon,
+  PenTool as PenIcon
 } from 'react-feather';
 import NavItem from './NavItem';
 
@@ -42,6 +43,11 @@ const items = [
     href: '/app/users',
     icon: UserIcon,
     title: 'Usuários'
+  },
+  {
+    href: '/app/course',
+    icon: PenIcon,
+    title: 'Cursos'
   },
   
 ];

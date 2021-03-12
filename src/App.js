@@ -13,8 +13,17 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import LoginView from 'src/views/auth';
 import ListView from 'src/views/StudentsList/ListView';
 import Books from 'src/views/BooksList/ListView';
-import Users from 'src/views/UsersList/ListView';
+import BooksCreate from 'src/views/BooksList/ListView/CreateBooksDetails';
+import BooksEdit from 'src/views/BooksList/ListView/EditBookDetails';
 import BooksCategory from 'src/views/BooksCategoryList/ListView';
+import BooksCategoryCreate from 'src/views/BooksCategoryList/ListView/CreateCategoryDetails';
+import BooksCategoryEdit from 'src/views/BooksCategoryList/ListView/EditCategoryDetails';
+import Users from 'src/views/UsersList/ListView';
+import UsersCreate from 'src/views/UsersList/ListView/CreateUsersDetails';
+import UsersEdit from 'src/views/UsersList/ListView/EditUsersDetails';
+import Courses from 'src/views/CoursesList/ListView';
+import CoursesCreate from 'src/views/CoursesList/ListView/CreateCourseDetails';
+import CoursesEdit from 'src/views/CoursesList/ListView/EditCourseDetails';
 import { createBrowserHistory } from "history";
 var hist = createBrowserHistory();
 
@@ -44,13 +53,58 @@ const App = () => {
             />
             <PrivateRoute
               exact
+              path="/app/books/create"
+              component={() => <Dashboard Children={BooksCreate} />}
+            />
+            <PrivateRoute
+              exact
+              path="/app/books/edit/:id"
+              component={() => <Dashboard Children={BooksEdit} />}
+            />
+            <PrivateRoute
+              exact
               path="/app/category"
               component={() => <Dashboard Children={BooksCategory} />}
             />
             <PrivateRoute
               exact
+              path="/app/category/create"
+              component={() => <Dashboard Children={BooksCategoryCreate} />}
+            />
+            <PrivateRoute
+              exact
+              path="/app/category/edit/:id"
+              component={() => <Dashboard Children={BooksCategoryEdit} />}
+            />
+            <PrivateRoute
+              exact
               path="/app/users"
               component={() => <Dashboard Children={Users} />}
+            />
+            <PrivateRoute
+              exact
+              path="/app/users/create"
+              component={() => <Dashboard Children={UsersCreate} />}
+            />
+            <PrivateRoute
+              exact
+              path="/app/users/edit/:id"
+              component={() => <Dashboard Children={UsersEdit} />}
+            />
+            <PrivateRoute
+              exact
+              path="/app/course"
+              component={() => <Dashboard Children={Courses} />}
+            />
+            <PrivateRoute
+              exact
+              path="/app/course/create"
+              component={() => <Dashboard Children={CoursesCreate} />}
+            />
+            <PrivateRoute
+              exact
+              path="/app/course/edit/:id"
+              component={() => <Dashboard Children={CoursesEdit} />}
             />
           </Switch>
     </AuthProvider>

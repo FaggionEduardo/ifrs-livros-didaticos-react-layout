@@ -39,6 +39,9 @@ const errorLink = (dispatch) =>
         if (message.match(/jwt expired/)) {
           dispatch(logout());
         }
+        if (message.match(/invalid signature/)) {
+          dispatch(logout());
+        }
       });
     }
   });

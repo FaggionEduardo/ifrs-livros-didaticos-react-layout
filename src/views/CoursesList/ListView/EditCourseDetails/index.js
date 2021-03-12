@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { useMutation,useQuery, gql } from '@apollo/client';
-import {CategoryCreate} from '../../../../graphql/mutations/category'
-import { Link, useHistory } from 'react-router-dom';
-import { CategoryQuery } from 'src/graphql/queries/category';
+import {CourseEdit} from '../../../../graphql/mutations/course'
 import useMyForm from '../../../../hooks/MyForm'
 import fields from './fields'
 import {
@@ -18,14 +16,15 @@ import {
   TextField,
   makeStyles
 } from '@material-ui/core';
-
+import { CourseQuery, CoursesQuery } from 'src/graphql/queries/course';
+import {Link,useParams,useHistory} from "react-router-dom";
 
 
 const useStyles = makeStyles(() => ({
   root: {}
 }));
 
-const CategoryDetails = ({ className,...rest }) => {
+const CourseDetails = ({ className, ...rest }) => {
   const classes = useStyles();
   var history= useHistory()
   const {
@@ -37,34 +36,54 @@ const CategoryDetails = ({ className,...rest }) => {
     reset,
     setValues
   } = useMyForm(fields);
-  
-  const [mutationCreate] = useMutation(CategoryCreate,{
+  var { id } = useParams();
+  const { loading, error, data } = useQuery(CourseQuery, {
+    variables: { id:id },
+  });
+  var values= {
+    name:"",
     
+  }
+  if(!loading){
+    values=data.course
+  }
+  const onCompleted = useCallback(
+    (response) => {
+      setValues(values);
+    },
+    [setValues]
+  );
+  useEffect(() => {
+    onCompleted()
+  },[values])
+  
+  
+ 
+  const [mutationEdit] = useMutation(CourseEdit,{
     refetchQueries: [
-      { query: CategoryQuery,
+      { query: CoursesQuery,
        variables: { page:1, limit:10 }
        }
     ]
   });  
-  
-  const createCategory = async (data) => {
-    await mutationCreate({ variables: data })
-    history.push('/app/category')
-
+  const editCourse = async (data) => {
+    console.log(data)
+    await mutationEdit({ variables: data })
+    history.push('/app/course')
   };
-
+ 
   
 
   return (
     <form
-    onSubmit={handleSubmit(createCategory)}
+      onSubmit={handleSubmit(editCourse)}
       className={clsx(classes.root, className)}
       {...rest}
     >
       <Card>
         <CardHeader
-          subheader="Você pode cadastrar as informações de categoria de livro."
-          title="Categoria de Livro"
+          subheader="Você pode editar as informações de curso."
+          title="Curso"
         />
         <Divider />
         <CardContent>
@@ -77,10 +96,11 @@ const CategoryDetails = ({ className,...rest }) => {
               md={6}
               xs={12}
             >
+              <input type="hidden" name="id" value={id}/>
               <TextField
                 error={!!errors.name}
                 fullWidth
-                helperText={!!errors.name?errors.name:"Informe o nome da categoria"}
+                helperText={!!errors.name?errors.name:"Informe o nome do curso"}
                 label={input.name.label}
                 name="name"
                 type={input.name.type}
@@ -88,8 +108,8 @@ const CategoryDetails = ({ className,...rest }) => {
                 value={input.name.value}
                 variant="outlined"
               />
+              
             </Grid>
-            
             
           </Grid>
         </CardContent>
@@ -99,7 +119,7 @@ const CategoryDetails = ({ className,...rest }) => {
           justifyContent="flex-end"
           p={2}
         >
-          <Link to="/app/category">
+          <Link to="/app/course">
           <Button
             style={{marginRight:10,backgroundColor:"#8B0000",color:'#fff'}}
             variant="contained"
@@ -111,8 +131,9 @@ const CategoryDetails = ({ className,...rest }) => {
             color="primary"
             variant="contained"
             type="submit"
+            
           >
-            Cadastrar
+            Editar
           </Button>
         </Box>
       </Card>
@@ -122,4 +143,4 @@ const CategoryDetails = ({ className,...rest }) => {
 
 
 
-export default CategoryDetails;
+export default CourseDetails;

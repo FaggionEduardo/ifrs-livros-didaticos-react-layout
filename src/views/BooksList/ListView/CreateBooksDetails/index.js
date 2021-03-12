@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { useMutation,useQuery, gql } from '@apollo/client';
+import {BooksCreate} from '../../../../graphql/mutations/book'
 import {
   Box,
   Button,
@@ -13,36 +14,48 @@ import {
   TextField,
   makeStyles
 } from '@material-ui/core';
-
-
+import { Link, useHistory } from 'react-router-dom';
+import { BooksQuery } from 'src/graphql/queries/book';
+import useMyForm from '../../../../hooks/MyForm'
+import fields from './fields'
 
 const useStyles = makeStyles(() => ({
   root: {}
 }));
 
-const BookDetails = ({ className, create, set,...rest }) => {
+const BookDetails = ({ className, ...rest }) => {
+  var history= useHistory()
   const classes = useStyles();
-  const [values, setValues] = useState(
-    {
-      name:"",
-      code:"",
-      author:"",
-      volume:"",
-      quantity:1
-    }
-  );
+  const {
+    fields: input,
+    errors,
+    handleSubmit,
+    handleChange,
+    setTouched,
+    reset,
+    setValues
+  } = useMyForm(fields);
   
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
-    });
+  const [mutationCreate] = useMutation(BooksCreate,{
+    
+    refetchQueries: [
+      { query: BooksQuery,
+       variables: { page:1, limit:10 }
+       }
+    ]
+  });  
+  
+  const createBook = async (data) => {
+    
+    data.quantity=parseInt(data.quantity)
+    await mutationCreate({ variables: data })
+    history.push('/app/books')
+
   };
-  
 
   return (
     <form
-      onSubmit={()=>create(values)}
+      onSubmit={handleSubmit(createBook)}
       className={clsx(classes.root, className)}
       {...rest}
     >
@@ -57,20 +70,24 @@ const BookDetails = ({ className, create, set,...rest }) => {
             container
             spacing={3}
           >
-            <Grid
+           
+           <Grid
               item
               md={6}
               xs={12}
             >
               <TextField
+                error={!!errors.name}
                 fullWidth
-                helperText="Informe o título do livro"
-                label="Título"
+                helperText={!!errors.name?errors.name:"Informe o título do livro"}
+                label={input.name.label}
                 name="name"
-                onChange={handleChange}
-                required
+                type={input.name.type}
+                onChange={({ target }) => handleChange(target)}
+                value={input.name.value}
                 variant="outlined"
               />
+              
             </Grid>
             <Grid
               item
@@ -78,11 +95,14 @@ const BookDetails = ({ className, create, set,...rest }) => {
               xs={12}
             >
               <TextField
+                error={!!errors.author}
                 fullWidth
-                label="Autor"
+                helperText={errors.author}
+                label={input.name.label}
                 name="author"
-                onChange={handleChange}
-                required
+                type={input.author.type}
+                onChange={({ target }) => handleChange(target)}
+                value={input.author.value}
                 variant="outlined"
               />
             </Grid>
@@ -92,11 +112,14 @@ const BookDetails = ({ className, create, set,...rest }) => {
               xs={12}
             >
               <TextField
+                error={!!errors.code}
                 fullWidth
-                label="Código"
+                helperText={errors.code}
+                label={input.code.label}
                 name="code"
-                onChange={handleChange}
-                required
+                type={input.code.type}
+                onChange={({ target }) => handleChange(target)}
+                value={input.code.value}
                 variant="outlined"
               />
             </Grid>
@@ -106,11 +129,14 @@ const BookDetails = ({ className, create, set,...rest }) => {
               xs={12}
             >
               <TextField
+                error={!!errors.volume}
                 fullWidth
-                label="Volume"
+                helperText={errors.volume}
+                label={input.volume.label}
                 name="volume"
-                required
-                onChange={handleChange}
+                type={input.volume.type}
+                onChange={({ target }) => handleChange(target)}
+                value={input.volume.value}
                 variant="outlined"
               />
             </Grid>
@@ -120,16 +146,17 @@ const BookDetails = ({ className, create, set,...rest }) => {
               xs={12}
             >
               <TextField
+                error={!!errors.quantity}
                 fullWidth
-                label="Quantidade"
+                helperText={errors.quantity}
+                label={input.quantity.label}
                 name="quantity"
-                onChange={handleChange}
-                required
-                type="number"
+                type={input.quantity.type}
+                onChange={({ target }) => handleChange(target)}
+                value={input.quantity.value}
                 variant="outlined"
               />
             </Grid>
-            
           </Grid>
         </CardContent>
         <Divider />
@@ -138,13 +165,14 @@ const BookDetails = ({ className, create, set,...rest }) => {
           justifyContent="flex-end"
           p={2}
         >
+          <Link to="/app/books">
           <Button
             style={{marginRight:10,backgroundColor:"#8B0000",color:'#fff'}}
             variant="contained"
-            onClick={()=>set(false)}
           >
             Cancelar
           </Button>
+          </Link>
           <Button
             color="primary"
             variant="contained"
