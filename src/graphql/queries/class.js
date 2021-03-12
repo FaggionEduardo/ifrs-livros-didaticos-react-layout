@@ -13,4 +13,13 @@ const ClassesQuery = gql`
   }
 `;
 
-export {ClassesQuery}
+const CoursesQuery = gql`
+  query CoursesQuery {
+    courses {
+      id
+      name
+    }
+  }
+`;
+
+export {ClassesQuery, CoursesQuery}

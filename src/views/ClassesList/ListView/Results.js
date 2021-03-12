@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
-import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
-  Avatar,
   Box,
   Card,
-  Checkbox,
   Table,
   TableBody,
   TableCell,
@@ -30,9 +26,6 @@ const Results = ({ className, classes, ...rest }) => {
   const classes = useStyles();
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-
-
-  
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
@@ -69,13 +62,11 @@ const Results = ({ className, classes, ...rest }) => {
                   hover
                   key={classes.id}
                 >
-                  
                   <TableCell>
                     <Box
                       alignItems="center"
                       display="flex"
                     >
-                     
                       <Typography
                         color="textPrimary"
                         variant="body1"

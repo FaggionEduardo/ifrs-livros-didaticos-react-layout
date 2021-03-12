@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Modal from '../../../components/Modal';
 import clsx from 'clsx';
 import {
   Box,
@@ -37,13 +36,11 @@ const Toolbar = ({ className,create,  ...rest }) => {
         display="flex"
         justifyContent="flex-end"
       >
-        
         <Button
           color="primary"
           onClick={()=>create(true)}
           variant="contained"
         >Adicionar Turma</Button>
-      
       </Box>
       <Box mt={3}>
         <Card>

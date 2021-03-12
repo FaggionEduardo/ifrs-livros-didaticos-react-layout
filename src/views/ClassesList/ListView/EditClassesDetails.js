@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
 import { useMutation,useQuery, gql } from '@apollo/client';
+import { CoursesQuery } from '../../../graphql/queries/class'
 import {
   Box,
   Button,
@@ -11,10 +11,13 @@ import {
   Divider,
   Grid,
   TextField,
-  makeStyles
+  makeStyles,
+  Select,
+  InputLabel
 } from '@material-ui/core';
 
-
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -30,6 +33,11 @@ const ClassDetails = ({ className, details,edit,set, ...rest }) => {
       [event.target.name]: event.target.value
     });
   };
+
+  const { loading, error, data } = useQuery(CoursesQuery);
+
+  if (loading) return 'Loading...';
+  if (error) return `Error! ${error.message}`;
   
 
   return (
@@ -70,18 +78,24 @@ const ClassDetails = ({ className, details,edit,set, ...rest }) => {
               md={6}
               xs={12}
             >
-              <TextField
-                fullWidth
-                label="Curso"
-                name="course_id"
-                type="number"
-                value={values.course_id}
-                onChange={handleChange}
-                required
-                variant="outlined"
-              />
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel id="demo-simple-select-filled-label">Curso</InputLabel>
+                <Select
+                  id="select"
+                  onChange={handleChange}
+                  label="Curso"
+                  name="course_id"
+                  value={values.course_id}
+                  required
+                >
+                  {data.courses.map((course) => (
+                    (course.id == values.course_id)?
+                      <MenuItem value={course.id}>{course.name}</MenuItem>:
+                      <MenuItem value={course.id}>{course.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
-      
           </Grid>
         </CardContent>
         <Divider />
@@ -110,7 +124,5 @@ const ClassDetails = ({ className, details,edit,set, ...rest }) => {
     </form>
   );
 };
-
-
 
 export default ClassDetails;

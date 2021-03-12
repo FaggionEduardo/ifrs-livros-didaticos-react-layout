@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Page from 'src/components/Page';
 import Toolbar from './Toolbar';
 import ClassesDetails from './EditClassesDetails';
-import CreateClasses from './CreateClassesDetails';
+import CreateClasses from './CreateClassesDetails/index';
 import {ClassesQuery} from '../../../graphql/queries/class'
 import {ClassCreate, ClassDelete, ClassEdit} from '../../../graphql/mutations/class'
 import { useMutation,useQuery, gql } from '@apollo/client';
@@ -71,7 +71,7 @@ const ClassesList = (props) => {
        variables: { page:page, limit:limit }
        }
     ]
-  });  
+  }); 
 
   if (error) return <p>Error :(</p>;
  
