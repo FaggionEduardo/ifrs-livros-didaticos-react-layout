@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
-const CategoryQuery = gql`
-  query CategoryQuery($page:Int!, $limit:Int!){
+const CategoriesQuery = gql`
+  query CategoriesQuery($page:Int!, $limit:Int!){
     paginateCategories(page:$page, limit:$limit) {
       docs{
         id
@@ -11,5 +11,13 @@ const CategoryQuery = gql`
     }
   }
 `;
+const CategoryQuery = gql`
+  query CategoryQuery($id:ID!){
+    category(id:$id) {
+        id
+        name
+    }
+  }
+`;
 
-export {CategoryQuery}
+export {CategoriesQuery, CategoryQuery}

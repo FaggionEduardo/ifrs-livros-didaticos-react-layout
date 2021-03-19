@@ -15,5 +15,17 @@ const BooksQuery = gql`
     }
   }
 `;
+const BookQuery = gql`
+  query BookQuery($id:ID!){
+    book(id:$id) {
+        id
+        name
+        code
+        author
+        volume
+        quantity
+  }
+}
+`;
 
-export {BooksQuery}
+export {BooksQuery, BookQuery}

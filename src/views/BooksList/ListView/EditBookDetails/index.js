@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { useMutation,useQuery, gql } from '@apollo/client';
-import {UserCreate} from '../../../../graphql/mutations/user'
-import {UsersQuery} from '../../../../graphql/queries/user'
+import {BooksEdit} from '../../../../graphql/mutations/book'
 import useMyForm from '../../../../hooks/MyForm'
 import fields from './fields'
-import { Link, useHistory } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -18,14 +16,15 @@ import {
   TextField,
   makeStyles
 } from '@material-ui/core';
-
+import { BookQuery, BooksQuery } from 'src/graphql/queries/book';
+import {Link,useParams,useHistory} from "react-router-dom";
 
 
 const useStyles = makeStyles(() => ({
   root: {}
 }));
 
-const UserDetails = ({ className,...rest }) => {
+const BookDetails = ({ className, ...rest }) => {
   const classes = useStyles();
   var history= useHistory()
   const {
@@ -37,30 +36,58 @@ const UserDetails = ({ className,...rest }) => {
     reset,
     setValues
   } = useMyForm(fields);
-  const [mutationCreate] = useMutation(UserCreate,{
+  var { id } = useParams();
+  const { loading, error, data } = useQuery(BookQuery, {
+    variables: { id:id },
+  });
+  var values= {
+    name:"",
+    code:"",
+    author:"",
+    volume:"",
+    quantity:1
+  }
+  if(!loading){
+    values=data.book
+  }
+  const onCompleted = useCallback(
+    (response) => {
+      setValues(values);
+    },
+    [setValues]
+  );
+  useEffect(() => {
+    onCompleted()
+  },[values])
+  
+  
+ 
+  const [mutationEdit] = useMutation(BooksEdit,{
     refetchQueries: [
-      { query: UsersQuery,
+      { query: BooksQuery,
        variables: { page:1, limit:10 }
        }
     ]
-  }); 
-  const createUser = (data) => {
-    data.accessLevel=parseInt(data.accessLevel)
-    mutationCreate({ variables: data })
-    history.push('/app/users')
+  });  
+  const editBook = async (data) => {
+    console.log(data)
+    data.quantity=parseInt(data.quantity)
+    await mutationEdit({ variables: data })
+    history.push('/app/books')
   };
+ 
   
 
   return (
     <form
-      onSubmit={handleSubmit(createUser)}
+      onSubmit={handleSubmit(editBook)}
       className={clsx(classes.root, className)}
       {...rest}
     >
       <Card>
         <CardHeader
-          subheader="Você pode cadastrar as informações de um usuário."
-          title="Usuário"
+          subheader="Você pode editar as informações do livro."
+          title="Livro"
         />
         <Divider />
         <CardContent>
@@ -73,10 +100,11 @@ const UserDetails = ({ className,...rest }) => {
               md={6}
               xs={12}
             >
+              <input type="hidden" name="id" value={id}/>
               <TextField
                 error={!!errors.name}
                 fullWidth
-                helperText={!!errors.name?errors.name:"Informe o nome do usuário"}
+                helperText={!!errors.name?errors.name:"Informe o título do livro"}
                 label={input.name.label}
                 name="name"
                 type={input.name.type}
@@ -84,6 +112,7 @@ const UserDetails = ({ className,...rest }) => {
                 value={input.name.value}
                 variant="outlined"
               />
+              
             </Grid>
             <Grid
               item
@@ -91,14 +120,14 @@ const UserDetails = ({ className,...rest }) => {
               xs={12}
             >
               <TextField
-                error={!!errors.login}
+                error={!!errors.author}
                 fullWidth
-                helperText={errors.login}
-                label={input.login.label}
-                name="login"
-                type={input.login.type}
+                helperText={errors.author}
+                label={input.name.label}
+                name="author"
+                type={input.author.type}
                 onChange={({ target }) => handleChange(target)}
-                value={input.login.value}
+                value={input.author.value}
                 variant="outlined"
               />
             </Grid>
@@ -107,15 +136,15 @@ const UserDetails = ({ className,...rest }) => {
               md={6}
               xs={12}
             >
-               <TextField
-                error={!!errors.password}
+              <TextField
+                error={!!errors.code}
                 fullWidth
-                helperText={errors.password}
-                label={input.password.label}
-                name="password"
-                type={input.password.type}
+                helperText={errors.code}
+                label={input.code.label}
+                name="code"
+                type={input.code.type}
                 onChange={({ target }) => handleChange(target)}
-                value={input.password.value}
+                value={input.code.value}
                 variant="outlined"
               />
             </Grid>
@@ -124,19 +153,36 @@ const UserDetails = ({ className,...rest }) => {
               md={6}
               xs={12}
             >
-             <TextField
-                error={!!errors.accessLevel}
+              <TextField
+                error={!!errors.volume}
                 fullWidth
-                helperText={errors.accessLevel}
-                label={input.accessLevel.label}
-                name="accessLevel"
-                type={input.accessLevel.type}
+                helperText={errors.volume}
+                label={input.volume.label}
+                name="volume"
+                type={input.volume.type}
                 onChange={({ target }) => handleChange(target)}
-                value={input.accessLevel.value}
+                value={input.volume.value}
                 variant="outlined"
               />
             </Grid>
-           
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
+              <TextField
+                error={!!errors.quantity}
+                fullWidth
+                helperText={errors.quantity}
+                label={input.quantity.label}
+                name="quantity"
+                type={input.quantity.type}
+                onChange={({ target }) => handleChange(target)}
+                value={input.quantity.value}
+                variant="outlined"
+              />
+            </Grid>
+            
           </Grid>
         </CardContent>
         <Divider />
@@ -145,7 +191,7 @@ const UserDetails = ({ className,...rest }) => {
           justifyContent="flex-end"
           p={2}
         >
-          <Link to="/app/users">
+          <Link to="/app/books">
           <Button
             style={{marginRight:10,backgroundColor:"#8B0000",color:'#fff'}}
             variant="contained"
@@ -157,8 +203,9 @@ const UserDetails = ({ className,...rest }) => {
             color="primary"
             variant="contained"
             type="submit"
+            
           >
-            Cadastrar
+            Editar
           </Button>
         </Box>
       </Card>
@@ -168,4 +215,4 @@ const UserDetails = ({ className,...rest }) => {
 
 
 
-export default UserDetails;
+export default BookDetails;

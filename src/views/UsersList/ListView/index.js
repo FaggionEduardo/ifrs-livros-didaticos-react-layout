@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import Page from 'src/components/Page';
 import Toolbar from './Toolbar';
-import UsersDetails from './EditUsersDetails';
-import CreateUsers from './CreateUsersDetails';
-import {UserQuery} from '../../../graphql/queries/user'
+import {UsersQuery} from '../../../graphql/queries/user'
 import {UserCreate, UserDelete, UserEdit} from '../../../graphql/mutations/user'
 import { useMutation,useQuery, gql } from '@apollo/client';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -27,6 +25,7 @@ import {
   Button
 } from '@material-ui/core';
 import { Trash2 as TrashIcon, Edit as EditIcon} from 'react-feather';
+import { Link } from 'react-router-dom';
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -49,39 +48,31 @@ const UsersList = (props) => {
   const [page, setPage] = useState(1);
   const [edit, setEdit] = useState(false);
   const [create, setCreate] = useState(false);
-  const { loading, error, data } = useQuery(UserQuery, {
+  const { loading, error, data } = useQuery(UsersQuery, {
     variables: { page:page, limit:limit },
   });
   const [mutationDelete] = useMutation(UserDelete,{
     
     refetchQueries: [
-      { query: UserQuery,
+      { query: UsersQuery,
        variables: { page:page, limit:limit }
        }
     ]
   });
   const [mutationEdit] = useMutation(UserEdit,{
     refetchQueries: [
-      { query: UserQuery,
+      { query: UsersQuery,
        variables: { page:page, limit:limit }
        }
     ]
   });  
-  const [mutationCreate] = useMutation(UserCreate,{
-    refetchQueries: [
-      { query: UserQuery,
-       variables: { page:page, limit:limit }
-       }
-    ]
-  });  
+   
 
  
   if (error) return <p>Error :(</p>;
  
  
-  const defineEdit = (obj) => {
-   setEdit(obj)
-  };
+  
   
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
@@ -98,11 +89,7 @@ const UsersList = (props) => {
     mutationEdit({ variables: values })
     setEdit(false)
   };
-  const createUser = (values) => {
-    values.accessLevel=parseInt(values.accessLevel)
-    mutationCreate({ variables: values })
-    setCreate(false)
-  };
+  
  
   return (
     <Page
@@ -110,8 +97,7 @@ const UsersList = (props) => {
       title="Usuários"
     >
       <Container maxWidth={false}>
-      {edit==false && create==false?
-      <>
+     
         <Toolbar create={setCreate} />
         <Box mt={3}>
           {loading?'':
@@ -181,7 +167,7 @@ const UsersList = (props) => {
                           </Button>
                           </Modal>
                           
-                          <EditIcon onClick={()=>defineEdit(user)} className={classes.icon}/>
+                          <Link to={"/app/users/edit/"+user.id} style={{color:'#263238'}}><EditIcon className={classes.icon}/></Link>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -202,13 +188,7 @@ const UsersList = (props) => {
           </Card>
           }
         </Box>
-        </>
-        :
-        <>
-        {edit!==false?<UsersDetails set={setEdit} edit={editUser} details={edit}/>:''}
-        {create!==false?<CreateUsers set={setCreate} create={createUser} />:''}
-        </>
-        }
+        
       </Container>
     </Page>
   );

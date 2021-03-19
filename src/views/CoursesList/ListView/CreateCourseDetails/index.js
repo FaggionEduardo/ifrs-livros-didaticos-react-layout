@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { useMutation,useQuery, gql } from '@apollo/client';
+import {CourseCreate} from '../../../../graphql/mutations/course'
+import { Link, useHistory } from 'react-router-dom';
+import { CoursesQuery } from 'src/graphql/queries/course';
+import useMyForm from '../../../../hooks/MyForm'
+import fields from './fields'
 import {
   Box,
   Button,
@@ -20,28 +25,46 @@ const useStyles = makeStyles(() => ({
   root: {}
 }));
 
-const BookDetails = ({ className, details,edit,set, ...rest }) => {
+const CourseDetails = ({ className,...rest }) => {
   const classes = useStyles();
-  const [values, setValues] = useState(details);
+  var history= useHistory()
+  const {
+    fields: input,
+    errors,
+    handleSubmit,
+    handleChange,
+    setTouched,
+    reset,
+    setValues
+  } = useMyForm(fields);
   
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
-    });
+  const [mutationCreate] = useMutation(CourseCreate,{
+    
+    refetchQueries: [
+      { query: CoursesQuery,
+       variables: { page:1, limit:10 }
+       }
+    ]
+  });  
+  
+  const createCourse = async (data) => {
+    await mutationCreate({ variables: data })
+    history.push('/app/course')
+
   };
+
   
 
   return (
     <form
-      onSubmit={()=>edit(values)}
+    onSubmit={handleSubmit(createCourse)}
       className={clsx(classes.root, className)}
       {...rest}
     >
       <Card>
         <CardHeader
-          subheader="Você pode editar as informações as informações de categoria de livro."
-          title="Categoria de Livro"
+          subheader="Você pode cadastrar as informações de curso."
+          title="Curso"
         />
         <Divider />
         <CardContent>
@@ -55,13 +78,14 @@ const BookDetails = ({ className, details,edit,set, ...rest }) => {
               xs={12}
             >
               <TextField
+                error={!!errors.name}
                 fullWidth
-                helperText="Informe o nome da categoria"
-                label="Categoria"
+                helperText={!!errors.name?errors.name:"Informe o nome do curso"}
+                label={input.name.label}
                 name="name"
-                onChange={handleChange}
-                required
-                value={values.name}
+                type={input.name.type}
+                onChange={({ target }) => handleChange(target)}
+                value={input.name.value}
                 variant="outlined"
               />
             </Grid>
@@ -75,20 +99,20 @@ const BookDetails = ({ className, details,edit,set, ...rest }) => {
           justifyContent="flex-end"
           p={2}
         >
+          <Link to="/app/course">
           <Button
             style={{marginRight:10,backgroundColor:"#8B0000",color:'#fff'}}
             variant="contained"
-            onClick={()=>set(false)}
           >
             Cancelar
           </Button>
+          </Link>
           <Button
             color="primary"
             variant="contained"
             type="submit"
-            
           >
-            Editar
+            Cadastrar
           </Button>
         </Box>
       </Card>
@@ -98,4 +122,4 @@ const BookDetails = ({ className, details,edit,set, ...rest }) => {
 
 
 
-export default BookDetails;
+export default CourseDetails;
