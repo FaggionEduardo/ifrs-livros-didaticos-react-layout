@@ -17,7 +17,7 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
-import getInitials from 'src/utils/getInitials';
+import { Trash2 as TrashIcon, Edit as EditIcon} from 'react-feather';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -26,43 +26,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Results = ({ className, students, ...rest }) => {
+const Results = ({ className, books, ...rest }) => {
   const classes = useStyles();
-  const [selectedStudentIds, setSelectedStudentIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-
-  const handleSelectAll = (event) => {
-    let newSelectedStudentIds;
-
-    if (event.target.checked) {
-      newSelectedStudentIds = students.map((student) => student.id);
-    } else {
-      newSelectedStudentIds = [];
-    }
-
-    setSelectedStudentIds(newSelectedStudentIds);
-  };
-
-  const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedStudentIds.indexOf(id);
-    let newSelectedStudentIds = [];
-
-    if (selectedIndex === -1) {
-      newSelectedStudentIds = newSelectedStudentIds.concat(selectedStudentIds, id);
-    } else if (selectedIndex === 0) {
-      newSelectedStudentIds = newSelectedStudentIds.concat(selectedStudentIds.slice(1));
-    } else if (selectedIndex === selectedStudentIds.length - 1) {
-      newSelectedStudentIds = newSelectedStudentIds.concat(selectedStudentIds.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelectedStudentIds = newSelectedStudentIds.concat(
-        selectedStudentIds.slice(0, selectedIndex),
-        selectedStudentIds.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelectedStudentIds(newSelectedStudentIds);
-  };
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
@@ -82,46 +49,33 @@ const Results = ({ className, students, ...rest }) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedStudentIds.length === students.length}
-                    color="primary"
-                    indeterminate={
-                      selectedStudentIds.length > 0
-                      && selectedStudentIds.length < students.length
-                    }
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
                 <TableCell>
                   Nome
                 </TableCell>
                 <TableCell>
-                  Email
+                  E-mail
                 </TableCell>
                 <TableCell>
-                  Matrícula
+                  Matricula
                 </TableCell>
                 <TableCell>
-                  Data de registro
+                  Curso
+                </TableCell>
+                <TableCell>
+                  Turma
+                </TableCell>
+                <TableCell>
+                  
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {students.slice(0, limit).map((student) => (
+              {books.slice(0, limit).map((book) => (
                 <TableRow
                   hover
-                  key={student.id}
-                  selected={selectedStudentIds.indexOf(student.id) !== -1}
+                  key={book.id}
                 >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                    color="primary"
-                      checked={selectedStudentIds.indexOf(student.id) !== -1}
-                      onChange={(event) => handleSelectOne(event, student.id)}
-                      value="true"
-                    />
-                  </TableCell>
+                  
                   <TableCell>
                     <Box
                       alignItems="center"
@@ -132,18 +86,25 @@ const Results = ({ className, students, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {student.name}
+                        {book.name}
                       </Typography>
                     </Box>
                   </TableCell>
                   <TableCell>
-                    {student.email}
+                    {book.email}
                   </TableCell>
                   <TableCell>
-                    {student.matriculation}
+                    {book.matriculation}
                   </TableCell>
                   <TableCell>
-                    {moment(student.createdAt).format('DD/MM/YYYY')}
+                    {book.course_id}
+                  </TableCell>
+                  <TableCell>
+                    {book.class_id}
+                  </TableCell>
+                  <TableCell>
+                    <TrashIcon/>
+                    <EditIcon/>
                   </TableCell>
                 </TableRow>
               ))}
@@ -153,7 +114,7 @@ const Results = ({ className, students, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={students.length}
+        count={books.length}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleLimitChange}
         page={page}
@@ -165,9 +126,6 @@ const Results = ({ className, students, ...rest }) => {
   );
 };
 
-Results.propTypes = {
-  className: PropTypes.string,
-  students: PropTypes.array.isRequired
-};
+
 
 export default Results;

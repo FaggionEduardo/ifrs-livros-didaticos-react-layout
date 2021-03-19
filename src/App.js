@@ -27,6 +27,9 @@ import UsersEdit from 'src/views/UsersList/ListView/EditUsersDetails';
 import Courses from 'src/views/CoursesList/ListView';
 import CoursesCreate from 'src/views/CoursesList/ListView/CreateCourseDetails';
 import CoursesEdit from 'src/views/CoursesList/ListView/EditCourseDetails';
+import Students from 'src/views/StudentsList/ListView';
+import StudentsCreate from 'src/views/StudentsList/ListView/CreateStudentsDetails';
+import StudentsEdit from 'src/views/StudentsList/ListView/EditStudentsDetails';
 import { createBrowserHistory } from "history";
 var hist = createBrowserHistory();
 
@@ -123,6 +126,21 @@ const App = () => {
               exact
               path="/app/classes/edit/:id"
               component={() => <Dashboard Children={ClassesEdit} />}
+            />
+            <PrivateRoute
+              exact
+              path="/app/students"
+              component={() => <Dashboard Children={Students} />}
+            />
+            <PrivateRoute
+              exact
+              path="/app/students/create"
+              component={() => <Dashboard Children={StudentsCreate} />}
+            />
+            <PrivateRoute
+              exact
+              path="/app/students/edit/:id"
+              component={() => <Dashboard Children={StudentsEdit} />}
             />
           </Switch>
     </AuthProvider>

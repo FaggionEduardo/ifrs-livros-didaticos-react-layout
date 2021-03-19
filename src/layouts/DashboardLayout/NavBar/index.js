@@ -55,6 +55,11 @@ const items = [
     icon: PenIcon,
     title: 'Cursos'
   },
+  {
+    href: '/app/student',
+    icon: UsersIcon,
+    title: 'Estudantes'
+  },
   
 ];
 

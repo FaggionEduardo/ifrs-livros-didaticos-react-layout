@@ -10,10 +10,10 @@ import {
   TextField,
   InputAdornment,
   SvgIcon,
-  makeStyles,
-  CardHeader
+  makeStyles
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Toolbar = ({ className, ...rest }) => {
+const Toolbar = ({ className,  ...rest }) => {
   const classes = useStyles();
 
   return (
@@ -37,47 +37,12 @@ const Toolbar = ({ className, ...rest }) => {
         display="flex"
         justifyContent="flex-end"
       >
-        
-        <Modal
+        <Link to="/app/students/create">
+        <Button
           color="primary"
-          text="Adicionar Aluno"
-        >
-          <CardHeader
-          subheader="Digite os dados do aluno nos campos abaixo"
-          title="Adicionar Alunos"
-        />
-          <TextField
-                fullWidth
-                label="Nome"
-                name="state"
-                required
-                variant="outlined"
-                style={{margin:10}}
-              ></TextField>
-            <TextField
-                fullWidth
-                label="Email"
-                name="state"
-                required
-                variant="outlined"
-                style={{margin:10}}
-              ></TextField>
-              <TextField
-                fullWidth
-                label="Matrícula"
-                name="state"
-                required
-                variant="outlined"
-                style={{margin:10}}
-              ></TextField>
-              <Button
-            color="primary"
-            variant="contained"
-            style={{margin:10}}
-          >
-           Salvar Aluno
-          </Button>
-        </Modal>
+          variant="contained"
+        >Adicionar Estudante</Button>
+      </Link>
       </Box>
       <Box mt={3}>
         <Card>
@@ -97,7 +62,7 @@ const Toolbar = ({ className, ...rest }) => {
                     </InputAdornment>
                   )
                 }}
-                placeholder="Buscar Alunos"
+                placeholder="Buscar Estudantes"
                 variant="outlined"
               />
             </Box>
