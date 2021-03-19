@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import clsx from 'clsx';
-import { useMutation, useQuery, gql } from '@apollo/client';
-import { ClassesQuery, CoursesQuery } from '../../../../graphql/queries/class'
-import { ClassCreate } from '../../../../graphql/mutations/class'
+import { useMutation,useQuery, gql } from '@apollo/client';
+import { CoursesQuery, ClassQuery, ClassesQuery } from '../../../../graphql/queries/class'
+import { ClassEdit } from '../../../../graphql/mutations/class'
 import fields from './fields'
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import useMyForm from '../../../../hooks/MyForm'
 import {
   Box,
@@ -15,7 +15,7 @@ import {
   Divider,
   Grid,
   TextField,
-  makeStyles, 
+  makeStyles,
   Select,
   InputLabel
 } from '@material-ui/core';
@@ -27,11 +27,11 @@ const useStyles = makeStyles(() => ({
   root: {}
 }));
 
-const ClassDetails = ({ className, create, set,...rest }) => {
+const ClassDetails = ({ className, details, edit, set, ...rest }) => {
   const classes = useStyles();
 
-  var history= useHistory();
-
+  var history= useHistory()
+  
   const {
     fields: input,
     errors,
@@ -42,7 +42,40 @@ const ClassDetails = ({ className, create, set,...rest }) => {
     setValues
   } = useMyForm(fields);
 
-  const [mutationCreate] = useMutation(ClassCreate,{
+  var { id } = useParams();
+
+  console.log(id)
+
+  const { loading, error, data } = useQuery(ClassQuery, {
+    variables: { id:id },
+  });
+
+  var values= {
+    name:"",
+    course_id:1
+  }
+  if(!loading){
+    console.log(data)
+    values=data.classRoom
+  }
+  const onCompleted = useCallback(
+    (response) => {
+      setValues(values);
+    },
+    [setValues]
+  );
+  useEffect(() => {
+    onCompleted()
+  },[values])
+
+
+  //const { loading1, error1, data1 } = useQuery(CoursesQuery);
+
+  //if (loading1) return 'Loading...';
+  //if (error1) return `Error! ${error.message}`;
+  
+
+  const [mutationEdit] = useMutation(ClassEdit,{
     refetchQueries: [
       { query: ClassesQuery,
        variables: { page:1, limit:10 }
@@ -50,26 +83,24 @@ const ClassDetails = ({ className, create, set,...rest }) => {
     ]
   }); 
 
-  const createClass = (data) => {
+  const editClass = async (data) => {
     data.course_id=parseInt(data.course_id)
-    mutationCreate({ variables: data })
+    console.log(data)
+    console.log("teste")
+    await mutationEdit({ variables: data })
     history.push('/app/classes')
   };
 
-  //const { loading, error, data } = useQuery(CoursesQuery);
-
-  //if (loading) return 'Loading...';
-  //if (error) return `Error! ${error.message}`;
-
+  
   return (
     <form
-      onSubmit={handleSubmit(createClass)}
+    onSubmit={handleSubmit(editClass)}
       className={clsx(classes.root, className)}
       {...rest}
     >
       <Card>
         <CardHeader
-          subheader="Você pode cadastrar as informações de uma turma."
+          subheader="Você pode editar as informações da turma."
           title="Turma"
         />
         <Divider />
@@ -83,6 +114,7 @@ const ClassDetails = ({ className, create, set,...rest }) => {
               md={6}
               xs={12}
             >
+              <input type="hidden" name="id" value={id}/>
               <TextField
                 error={!!errors.name}
                 fullWidth
@@ -133,8 +165,9 @@ const ClassDetails = ({ className, create, set,...rest }) => {
             color="primary"
             variant="contained"
             type="submit"
+            
           >
-            Cadastrar
+            Editar
           </Button>
         </Box>
       </Card>
@@ -144,10 +177,8 @@ const ClassDetails = ({ className, create, set,...rest }) => {
 
 export default ClassDetails;
 
-
 /*
-
-  <FormControl variant="outlined" className={classes.formControl}>
+<FormControl variant="outlined" className={classes.formControl}>
                 <InputLabel id="demo-simple-select-filled-label">Curso</InputLabel>
                 <Select
                   error={!!errors.courseId}
@@ -160,9 +191,10 @@ export default ClassDetails;
                   value={input.courseId.value}
                 >
                   {data.courses.map((course) => (
-                    <MenuItem value={course.id}>{course.name}</MenuItem>
+                    (course.id == values.course_id)?
+                      <MenuItem value={course.id}>{course.name}</MenuItem>:
+                      <MenuItem value={course.id}>{course.name}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
-
 */

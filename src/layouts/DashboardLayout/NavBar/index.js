@@ -45,7 +45,7 @@ const items = [
     title: 'Usuários'
   },
   {
-    href: '/app/class',
+    href: '/app/classes',
     icon: SquareIcon,
     title: 'Turma'
   },

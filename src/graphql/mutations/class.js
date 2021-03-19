@@ -10,9 +10,9 @@ const ClassDelete = gql`
 const ClassEdit = gql`
   mutation ClassEdit($id:ID!, $name:String!, $course_id:Int!){
     updateClass(
-    id:$id
-    name:$name
-    course_id:$course_id
+      id:$id
+      name:$name
+      course_id:$course_id
   ),{
     id
   }

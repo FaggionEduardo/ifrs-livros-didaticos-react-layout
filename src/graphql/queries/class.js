@@ -13,6 +13,16 @@ const ClassesQuery = gql`
   }
 `;
 
+const ClassQuery = gql`
+  query ClassQuery($id:ID!){
+    classRoom(id:$id) {
+        id
+        name
+        course_id
+    }
+  }
+`;
+
 const CoursesQuery = gql`
   query CoursesQuery {
     courses {
@@ -22,4 +32,4 @@ const CoursesQuery = gql`
   }
 `;
 
-export {ClassesQuery, CoursesQuery}
+export {ClassesQuery, ClassQuery, CoursesQuery}

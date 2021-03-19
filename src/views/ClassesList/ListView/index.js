@@ -27,6 +27,7 @@ import {
   Button
 } from '@material-ui/core';
 import { Trash2 as TrashIcon, Edit as EditIcon} from 'react-feather';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
     cursor:'pointer'
   }
 }));
+
 
 const ClassesList = (props) => {
   const classes = useStyles();
@@ -75,10 +77,6 @@ const ClassesList = (props) => {
 
   if (error) return <p>Error :(</p>;
  
-  const defineEdit = (obj) => {
-   setEdit(obj)
-  };
-  
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
   };
@@ -86,18 +84,15 @@ const ClassesList = (props) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage+1);
   };
+
   const deleteClass = (id) => {
     mutationDelete({ variables: { id } })
   };
+
   const editClass = (values) => {
     values.course_id=parseInt(values.course_id)
     mutationEdit({ variables: values })
     setEdit(false)
-  };
-  const createClass = (values) => {
-    values.course_id=parseInt(values.course_id)
-    mutationCreate({ variables: values })
-    setCreate(false)
   };
  
   return (
@@ -106,8 +101,6 @@ const ClassesList = (props) => {
       title="Turmas"
     >
       <Container maxWidth={false}>
-      {edit==false && create==false?
-      <>
         <Toolbar create={setCreate} />
         <Box mt={3}>
           {loading?'':
@@ -170,7 +163,7 @@ const ClassesList = (props) => {
                           </Button>
                           </Modal>
                           
-                          <EditIcon onClick={()=>defineEdit(classes)} className={classes.icon}/>
+                          <Link to={"/app/classes/edit/"+classes.id} style={{color:'#263238'}}><EditIcon className={classes.icon}/></Link>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -191,13 +184,6 @@ const ClassesList = (props) => {
           </Card>
           }
         </Box>
-        </>
-        :
-        <>
-        {edit!==false?<ClassesDetails set={setEdit} edit={editClass} details={edit}/>:''}
-        {create!==false?<CreateClasses set={setCreate} create={createClass} />:''}
-        </>
-        }
       </Container>
     </Page>
   );

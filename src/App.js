@@ -16,6 +16,8 @@ import Books from 'src/views/BooksList/ListView';
 import Users from 'src/views/UsersList/ListView';
 import BooksCategory from 'src/views/BooksCategoryList/ListView';
 import Classes from 'src/views/ClassesList/ListView';
+import ClassesCreate from 'src/views/ClassesList/ListView/CreateClassesDetails';
+import ClassesEdit from 'src/views/ClassesList/ListView/EditClassesDetails';
 import { createBrowserHistory } from "history";
 var hist = createBrowserHistory();
 
@@ -55,8 +57,18 @@ const App = () => {
             />
             <PrivateRoute
               exact
-              path="/app/class"
+              path="/app/classes"
               component={() => <Dashboard Children={Classes} />}
+            />
+            <PrivateRoute
+              exact
+              path="/app/classes/create"
+              component={() => <Dashboard Children={ClassesCreate} />}
+            />
+            <PrivateRoute
+              exact
+              path="/app/classes/edit/:id"
+              component={() => <Dashboard Children={ClassesEdit} />}
             />
           </Switch>
     </AuthProvider>
